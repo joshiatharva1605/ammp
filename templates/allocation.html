@@ -1,42 +1,248 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Operator Allocation</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<meta charset="UTF-8">
+<title>Allocation Panel</title>
+
+<style>
+body { font-family: Arial; margin: 0; background: #eef2f7; }
+
+.header {
+    display: flex; justify-content: space-between; align-items: center;
+    background: #1e3a5f; color: white; padding: 10px 20px;
+}
+
+.container { display: flex; height: calc(100vh - 60px); }
+
+.left { width: 70%; padding: 20px; }
+.right { width: 30%; background: white; padding: 15px; border-left: 2px solid #ccc; }
+
+.box {
+    background: white; padding: 15px; border-radius: 10px;
+    margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.title { font-weight: bold; margin-bottom: 10px; }
+
+.btn {
+    padding: 6px 12px; margin: 5px; border: none;
+    border-radius: 6px; background: #d1d5db; cursor: pointer;
+}
+
+.btn.active {
+    background: #1d4ed8; color: white;
+    box-shadow: 0 0 6px rgba(0,0,255,0.6);
+}
+
+.btn.disabled {
+    background: #aaa;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.vertical { display: flex; flex-direction: column; }
+.horizontal { display: flex; flex-wrap: wrap; }
+
+/* WORKER BLOCK */
+.worker {
+    width: 90px;
+    height: 50px;
+    background: #60a5fa;
+    margin: 5px;
+    border-radius: 5px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:12px;
+    text-align:center;
+    color:white;
+    padding:4px;
+    overflow:hidden;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+}
+
+/* DRAG HOVER */
+.worker.hover {
+    outline: 3px dashed #1d4ed8;
+}
+
+/* OPERATOR */
+.operator {
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+    cursor: grab;
+}
+</style>
 </head>
 
 <body>
 
-<h2>Operator Allocation</h2>
+<div class="header">
+    <div><b>Allocation Panel</b></div>
+    <div id="date"></div>
+</div>
 
-<table border="1">
+<div class="container">
 
-<tr>
-<th>Part</th>
-<th>Station</th>
-<th>Skill Required</th>
-<th>Assign Operator</th>
-</tr>
+<div class="left">
 
-<tr>
-<td>Gear Housing</td>
-<td>A</td>
-<td>L2</td>
+<div class="box">
+<div class="title">Part Name</div>
+<button class="btn part" onclick="selectPart(this,'Tensioner')">Tensioner</button>
+<button class="btn part" onclick="selectPart(this,'De-Compression')">De-Compression</button>
+<button class="btn part" onclick="selectPart(this,'Oil Pump')">Oil Pump</button>
+<button class="btn part" onclick="selectPart(this,'Drum Gear Shifter')">Drum Gear Shifter</button>
+</div>
 
-<td>
-<select>
-<option>Rahul</option>
-<option>Aman</option>
-</select>
-</td>
+<div class="box" id="partNoBox" style="display:none;">
+<div class="title">Part Number</div>
+<div id="partNoList"></div>
+</div>
 
-</tr>
+<div class="box" id="stationBox" style="display:none;">
+<div class="title">Stations</div>
+<div id="stationList" class="vertical"></div>
+</div>
 
-</table>
+<div class="box" id="machineBox" style="display:none;">
+<div class="title">Machines</div>
+<div id="machineList"></div>
+</div>
 
-<br>
+<div class="box" id="workerBox" style="display:none;">
+<div class="title">Worker Lines</div>
+<div id="workers" class="horizontal"></div>
+</div>
 
-<a href="/supervisor">Back</a>
+</div>
+
+<div class="right">
+<div class="title">Available Operators</div>
+<div class="operator" draggable="true" ondragstart="drag(event)" data-name="John">John - Skill 3</div>
+<div class="operator" draggable="true" ondragstart="drag(event)" data-name="Amit">Amit - Skill 2</div>
+<div class="operator" draggable="true" ondragstart="drag(event)" data-name="Ravi">Ravi - Skill 4</div>
+<div class="operator" draggable="true" ondragstart="drag(event)" data-name="Sara">Sara - Skill 1</div>
+</div>
+
+</div>
+
+<script>
+
+// DATE
+let d = new Date();
+document.getElementById("date").innerHTML =
+`${String(d.getDate()).padStart(2,'0')}-${String(d.getMonth()+1).padStart(2,'0')}-${d.getFullYear()}`;
+
+// DATA (same as before)
+const data = {
+"Tensioner":{
+"A50500000000":{"M/C Shop":{A:2,B:2,C:2},"Assy.Shop":{A:16},"Paint Shop":{A:5,B:5,C:5},"HT":{A:2,B:2,C:1},"Shot Blasting":{S1:1,S2:1}},
+"A67800000000":{"M/C Shop":{A:2,B:2,C:2},"Assy.Shop":{A:12},"Paint Shop":{A:5,B:5,C:5},"HT":{A:2,B:2,C:1},"Shot Blasting":{S1:1,S2:1}}
+},
+"De-Compression":{
+"A41200000000":{"Assy.Shop":{A:4,B:4,C:4}},
+"B13300000000":{"Assy.Shop":{A:2,B:2,C:2}},
+"B18400000000":{"Assy.Shop":{A:6,B:6,C:6}},
+"B18600000000":{"Assy.Shop":{A:6,B:6,C:6}}
+},
+"Oil Pump":{
+"A49200000000":{"M/C Shop":{A:9,B:9,C:9},"Assy.Shop":{A:6,B:6,C:6}},
+"A47600000000":{"M/C Shop":{A:1,B:1,C:1},"Assy.Shop":{A:5,B:5,C:5}},
+"A33600000000":{"M/C Shop":{A:1,B:1,C:1},"Assy.Shop":{A:5,B:5,C:5}}
+},
+"Drum Gear Shifter":{
+"A47700000000":{"M/C Shop":{A:5,B:5,C:5},"HT":{A:2,B:2,C:2},"Shot Blasting":{S1:1,S2:1}}
+}
+};
+
+function setActive(cls, el){
+document.querySelectorAll("."+cls).forEach(b=>b.classList.remove("active"));
+el.classList.add("active");
+}
+
+function selectPart(el, part){
+setActive("part",el);
+let html="";
+Object.keys(data[part]).forEach(p=>{
+html += `<button class="btn partNo" onclick="selectPartNo(this,'${part}','${p}')">${p}</button>`;
+});
+partNoList.innerHTML = html;
+partNoBox.style.display="block";
+stationBox.style.display="none";
+machineBox.style.display="none";
+workerBox.style.display="none";
+}
+
+function selectPartNo(el, part, partNo){
+setActive("partNo",el);
+let stations = data[part][partNo];
+let all = ["M/C Shop","Assy.Shop","Paint Shop","HT","Shot Blasting"];
+let html="";
+all.forEach(s=>{
+if(!stations[s]){
+html += `<button class="btn disabled">${s} (N/A)</button>`;
+}else{
+html += `<button class="btn station" onclick="selectStation(this,'${part}','${partNo}','${s}')">${s}</button>`;
+}
+});
+stationList.innerHTML = html;
+stationBox.style.display="block";
+machineBox.style.display="none";
+workerBox.style.display="none";
+}
+
+function selectStation(el, part, partNo, station){
+setActive("station",el);
+let machines = data[part][partNo][station];
+let html="";
+for(let m in machines){
+html += `<button class="btn machine" onclick="selectMachine(this,${machines[m]})">${m}</button>`;
+}
+machineList.innerHTML = html;
+machineBox.style.display="block";
+workerBox.style.display="none";
+}
+
+function selectMachine(el, count){
+setActive("machine",el);
+let html="";
+for(let i=0;i<count;i++){
+html += `<div class="worker" ondrop="drop(event)" ondragover="allowDrop(event)" ondragenter="hoverIn(event)" ondragleave="hoverOut(event)" data-list=""></div>`;
+}
+workers.innerHTML = html;
+workerBox.style.display="block";
+}
+
+// DRAG
+function drag(ev){
+ev.dataTransfer.setData("name", ev.target.dataset.name);
+}
+
+// DROP
+function allowDrop(ev){ ev.preventDefault(); }
+
+function hoverIn(ev){ ev.target.classList.add("hover"); }
+function hoverOut(ev){ ev.target.classList.remove("hover"); }
+
+function drop(ev){
+ev.preventDefault();
+ev.target.classList.remove("hover");
+
+let name = ev.dataTransfer.getData("name");
+let list = ev.target.dataset.list ? ev.target.dataset.list.split(",") : [];
+
+list.push(name);
+ev.target.dataset.list = list.join(",");
+
+// display truncated
+let display = list.join(", ");
+ev.target.innerText = display;
+
+// tooltip full
+ev.target.title = display;
+}
+</script>
 
 </body>
 </html>
