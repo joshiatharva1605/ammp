@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html>
+
 <head>
+
 <title>Supervisor Dashboard</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
 
@@ -16,16 +20,75 @@ background:#f4f6f9;
 .header{
 background:#0b2a5b;
 color:white;
-padding:15px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:12px 20px;
+}
+
+.header-left{
 font-size:22px;
 font-weight:bold;
+}
+
+/* PLANT NAME */
+
+.plant-name{
+color:#ffd700;
+margin-left:8px;
+animation:glow 2s infinite alternate;
+}
+
+@keyframes glow{
+
+0%{text-shadow:0 0 5px white;}
+
+100%{text-shadow:0 0 15px #ffd700;}
+
+}
+
+/* PLANT BUTTONS */
+
+.plant-buttons{
+margin-top:5px;
+}
+
+.plant-buttons button{
+background:#1f5fa5;
+border:none;
+color:white;
+padding:5px 10px;
+margin-right:5px;
+border-radius:4px;
+cursor:pointer;
+}
+
+.plant-buttons button:hover{
+background:#ffd700;
+color:black;
+}
+
+/* DATE */
+
+.header-center{
+font-size:18px;
+font-weight:bold;
+}
+
+/* RIGHT */
+
+.header-right{
 display:flex;
-justify-content:space-between;
 align-items:center;
+gap:15px;
+}
+
+.logo{
+height:45px;
 }
 
 .menu{
-font-size:28px;
+font-size:26px;
 cursor:pointer;
 }
 
@@ -45,10 +108,9 @@ padding-top:20px;
 }
 
 .closebtn{
-font-size:26px;
+font-size:24px;
 cursor:pointer;
 padding:10px 20px;
-display:block;
 text-align:right;
 }
 
@@ -71,6 +133,7 @@ display:flex;
 gap:15px;
 padding:20px;
 flex-wrap:wrap;
+align-items:center;
 }
 
 .card{
@@ -91,13 +154,26 @@ background:#0b2a5b;
 margin:0;
 }
 
-/* MAIN GRID */
+/* FILTERS */
+
+.filters{
+display:flex;
+gap:10px;
+margin-left:auto;
+}
+
+.filters select{
+padding:7px;
+border-radius:4px;
+}
+
+/* MAIN */
 
 .main{
 display:flex;
 }
 
-/* CHART AREA */
+/* CHART GRID */
 
 .charts{
 width:75%;
@@ -114,13 +190,18 @@ border-radius:6px;
 box-shadow:0 4px 8px rgba(0,0,0,0.1);
 }
 
-.chart{
-height:200px;
-background:#e9eef5;
+/* GRAPH HEADER */
+
+.chart-header{
 display:flex;
+justify-content:space-between;
 align-items:center;
-justify-content:center;
-color:#777;
+margin-bottom:10px;
+}
+
+.dateSelect{
+padding:5px;
+border-radius:4px;
 }
 
 /* RIGHT PANEL */
@@ -129,8 +210,6 @@ color:#777;
 width:25%;
 padding:20px;
 }
-
-/* OPERATORS PANEL */
 
 .operatorbox{
 background:white;
@@ -164,35 +243,42 @@ text-align:center;
 border-radius:5px;
 }
 
-/* ACTIONS PANEL */
-
-.actions{
-margin-top:20px;
-background:white;
-padding:15px;
-border-radius:6px;
-box-shadow:0 4px 8px rgba(0,0,0,0.1);
-}
-
-.actions div{
-background:#3d8ed8;
-color:white;
-padding:10px;
-margin:8px 0;
-border-radius:4px;
-}
-
 </style>
 
 </head>
 
 <body>
 
+<!-- HEADER -->
+
 <div class="header">
 
-DOJO 2.0 Monitoring Dashboard - Plant Wise
+<div class="header-left">
+
+DOJO 2.0 Monitoring Dashboard -
+
+<span class="plant-name" id="plantName">P01 Pantnagar</span>
+
+<div class="plant-buttons">
+
+<button onclick="setPlant('P01 Pantnagar')">P01</button>
+<button onclick="setPlant('P02 Chakan')">P02</button>
+<button onclick="setPlant('P03 Bangalore')">P03</button>
+
+</div>
+
+</div>
+
+<div class="header-center" id="currentDate"></div>
+
+<div class="header-right">
+
+<img class="logo"
+src="https://jipmglobal.com/wp-content/uploads/2021/06/41.-ADVIK-HI-TECH-PVT-.LTD_.jpg">
 
 <div class="menu" onclick="openMenu()">☰</div>
+
+</div>
 
 </div>
 
@@ -204,11 +290,13 @@ DOJO 2.0 Monitoring Dashboard - Plant Wise
 
 <a href="/attendance">Attendance</a>
 <a href="/allocation">Allocation</a>
+<a href="/total-workers">Total Workers</a>
+<a href="/machine-plant">Machine Plant</a>
 <a href="/">Logout</a>
 
 </div>
 
-<!-- DASHBOARD CARDS -->
+<!-- CARDS -->
 
 <div class="cards">
 
@@ -237,33 +325,126 @@ DOJO 2.0 Monitoring Dashboard - Plant Wise
 <p>Buffer Available</p>
 </div>
 
+<div class="filters">
+
+<select id="monthSelect">
+<option>Jan</option>
+<option>Feb</option>
+<option>Mar</option>
+<option>Apr</option>
+<option>May</option>
+<option>Jun</option>
+<option>Jul</option>
+<option>Aug</option>
+<option>Sep</option>
+<option>Oct</option>
+<option>Nov</option>
+<option>Dec</option>
+</select>
+
+<select id="yearSelect"></select>
+
 </div>
+
+</div>
+
+<!-- MAIN -->
 
 <div class="main">
 
 <div class="charts">
 
+<!-- MANPOWER -->
+
 <div class="section">
+
+<div class="chart-header">
+
 <h3>Manpower Availability Trend</h3>
-<div class="chart">Chart Area</div>
+
+<select class="dateSelect" onchange="loadGraph('manpowerChart',this.value)">
+<script>
+for(let i=1;i<=31;i++){
+document.write(`<option value="${i}">${i}</option>`)
+}
+</script>
+</select>
+
 </div>
 
+<canvas id="manpowerChart"></canvas>
+
+</div>
+
+<!-- ATTRITION -->
+
 <div class="section">
+
+<div class="chart-header">
+
 <h3>Attrition Rate Trend</h3>
-<div class="chart">Chart Area</div>
+
+<select class="dateSelect" onchange="loadGraph('attritionChart',this.value)">
+<script>
+for(let i=1;i<=31;i++){
+document.write(`<option value="${i}">${i}</option>`)
+}
+</script>
+</select>
+
 </div>
 
+<canvas id="attritionChart"></canvas>
+
+</div>
+
+<!-- BUFFER -->
+
 <div class="section">
+
+<div class="chart-header">
+
 <h3>Buffer Manpower Availability Trend</h3>
-<div class="chart">Chart Area</div>
+
+<select class="dateSelect" onchange="loadGraph('bufferChart',this.value)">
+<script>
+for(let i=1;i<=31;i++){
+document.write(`<option value="${i}">${i}</option>`)
+}
+</script>
+</select>
+
 </div>
+
+<canvas id="bufferChart"></canvas>
+
+</div>
+
+<!-- ABSENTEE -->
 
 <div class="section">
+
+<div class="chart-header">
+
 <h3>Absenteeism Rate Trend</h3>
-<div class="chart">Chart Area</div>
+
+<select class="dateSelect" onchange="loadGraph('absenteeChart',this.value)">
+<script>
+for(let i=1;i<=31;i++){
+document.write(`<option value="${i}">${i}</option>`)
+}
+</script>
+</select>
+
+</div>
+
+<canvas id="absenteeChart"></canvas>
+
 </div>
 
 </div>
+
+<!-- RIGHT PANEL -->
 
 <div class="rightpanel">
 
@@ -273,57 +454,19 @@ DOJO 2.0 Monitoring Dashboard - Plant Wise
 
 <div class="skillgrid">
 
-<div class="req">
-<h2>13</h2>
-L1 Required
-</div>
+<div class="req"><h2>13</h2>L1 Required</div>
+<div class="avl"><h2>12</h2>L1 Available</div>
 
-<div class="avl">
-<h2>12</h2>
-L1 Available
-</div>
+<div class="req"><h2>11</h2>L2 Required</div>
+<div class="avl"><h2>10</h2>L2 Available</div>
 
-<div class="req">
-<h2>11</h2>
-L2 Required
-</div>
+<div class="req"><h2>15</h2>L3 Required</div>
+<div class="avl"><h2>14</h2>L3 Available</div>
 
-<div class="avl">
-<h2>10</h2>
-L2 Available
-</div>
-
-<div class="req">
-<h2>15</h2>
-L3 Required
-</div>
-
-<div class="avl">
-<h2>14</h2>
-L3 Available
-</div>
-
-<div class="req">
-<h2>10</h2>
-L4 Required
-</div>
-
-<div class="avl">
-<h2>9</h2>
-L4 Available
-</div>
+<div class="req"><h2>10</h2>L4 Required</div>
+<div class="avl"><h2>9</h2>L4 Available</div>
 
 </div>
-
-</div>
-
-<div class="actions">
-
-<h4>Actions Planned for Manpower Shortage</h4>
-
-<div>Special perks</div>
-<div>Salary revision</div>
-<div>Buffer manpower planning</div>
 
 </div>
 
@@ -333,34 +476,96 @@ L4 Available
 
 <script>
 
-/* OPEN SIDEBAR */
+/* CURRENT DATE WITH DAY */
+
+let today=new Date()
+
+let days=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
+
+let day=days[today.getDay()]
+
+let dd=String(today.getDate()).padStart(2,'0')
+let mm=String(today.getMonth()+1).padStart(2,'0')
+let yyyy=today.getFullYear()
+
+document.getElementById("currentDate").innerText=
+day+", "+dd+"-"+mm+"-"+yyyy
+
+/* YEAR DROPDOWN */
+
+let yearSelect=document.getElementById("yearSelect")
+
+let currentYear=new Date().getFullYear()
+
+for(let y=2000;y<=currentYear;y++){
+
+let option=document.createElement("option")
+option.value=y
+option.text=y+"-"+(y+1)
+
+yearSelect.appendChild(option)
+
+}
+
+/* SET PLANT */
+
+function setPlant(name){
+document.getElementById("plantName").innerText=name
+}
+
+/* SIDEBAR */
 
 function openMenu(){
-document.getElementById("sidebar").style.right="0px";
+document.getElementById("sidebar").style.right="0px"
 }
-
-/* CLOSE SIDEBAR */
 
 function closeMenu(){
-document.getElementById("sidebar").style.right="-260px";
+document.getElementById("sidebar").style.right="-260px"
 }
 
-/* CLOSE IF CLICK OUTSIDE */
+/* CHARTS */
 
-document.addEventListener("click",function(event){
+let manpowerChart=new Chart(
+document.getElementById("manpowerChart"),
+{type:"bar",data:{labels:[],datasets:[{label:"Manpower",data:[]}]} }
+)
 
-let sidebar=document.getElementById("sidebar");
-let menu=document.querySelector(".menu");
+let attritionChart=new Chart(
+document.getElementById("attritionChart"),
+{type:"line",data:{labels:[],datasets:[{label:"Attrition",data:[]}]} }
+)
 
-if(
-sidebar.style.right=="0px" &&
-!sidebar.contains(event.target) &&
-!menu.contains(event.target)
-){
-closeMenu();
+let bufferChart=new Chart(
+document.getElementById("bufferChart"),
+{type:"line",data:{labels:[],datasets:[{label:"Buffer",data:[]}]} }
+)
+
+let absenteeChart=new Chart(
+document.getElementById("absenteeChart"),
+{type:"line",data:{labels:[],datasets:[{label:"Absentee",data:[]}]} }
+)
+
+/* GRAPH LOADER */
+
+function loadGraph(chartId,date){
+
+let month=document.getElementById("monthSelect").value
+let year=document.getElementById("yearSelect").value
+
+fetch(`/graph-data?chart=${chartId}&date=${date}&month=${month}&year=${year}`)
+.then(res=>res.json())
+.then(data=>{
+
+let chart=Chart.getChart(chartId)
+
+chart.data.labels=data.labels
+chart.data.datasets[0].data=data.values
+
+chart.update()
+
+})
+
 }
-
-});
 
 </script>
 
