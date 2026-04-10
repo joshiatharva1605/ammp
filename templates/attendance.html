@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Attendance</title>
+
+<style>
+
+body{
+font-family:Arial;
+margin:0;
+background:#f4f6f9;
+}
+
+.header{
+background:#0b2a5b;
+color:white;
+padding:15px;
+font-size:20px;
+}
+
+.container{
+padding:20px;
+}
+
+.searchbox{
+margin-bottom:20px;
+}
+
+.searchbox input{
+padding:10px;
+width:250px;
+border-radius:5px;
+border:1px solid #ccc;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+background:white;
+box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
+
+th{
+background:#1f5fa5;
+color:white;
+padding:12px;
+}
+
+td{
+padding:10px;
+text-align:center;
+border-bottom:1px solid #ddd;
+}
+
+tr:hover{
+background:#f1f1f1;
+}
+
+button{
+margin-top:15px;
+padding:10px 20px;
+background:#1f5fa5;
+color:white;
+border:none;
+border-radius:5px;
+cursor:pointer;
+}
+
+button:hover{
+background:#0b2a5b;
+}
+
+.back{
+margin-top:15px;
+display:inline-block;
+text-decoration:none;
+color:white;
+background:#444;
+padding:8px 15px;
+border-radius:5px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+Operator Attendance
+</div>
+
+<div class="container">
+
+<div class="searchbox">
+
+<input type="text" id="searchInput" placeholder="Search by Employee ID">
+
+</div>
+
+<form method="POST" action="/save_attendance">
+
+<table id="attendanceTable">
+
+<thead>
+<tr>
+
+<th>Employee ID</th>
+<th>Name</th>
+<th>Skill Level</th>
+<th>Present</th>
+
+</tr>
+</thead>
+
+<tbody>
+
+{% for emp in employees %}
+
+<tr>
+
+<td>{{ emp.emp_id }}</td>
+<td>{{ emp.emp_name }}</td>
+<td>{{ emp.skill }}</td>
+
+<td>
+<input type="checkbox" name="attendance" value="{{ emp.emp_id }}">
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+<button type="submit">Save Attendance</button>
+
+</form>
+
+<br>
+
+<a class="back" href="/supervisor">Back to Dashboard</a>
+
+</div>
+
+<script>
+
+/* SEARCH FUNCTION */
+
+document.getElementById("searchInput").addEventListener("keyup", function() {
+
+let filter = this.value.toUpperCase();
+let rows = document.querySelector("#attendanceTable tbody").rows;
+
+for (let i = 0; i < rows.length; i++) {
+
+let id = rows[i].cells[0].textContent.toUpperCase();
+
+if (id.indexOf(filter) > -1) {
+rows[i].style.display = "";
+}
+else {
+rows[i].style.display = "none";
+}
+
+}
+
+});
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<title>Admin Dashboard - Master Data</title>
+
+<style>
+
+body{
+font-family: Arial;
+margin:0;
+background:linear-gradient(120deg,#1f4037,#99f2c8);
+height:100vh;
+}
+
+/* HEADER */
+
+.header{
+background:#111;
+color:white;
+padding:15px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.header h2{
+margin:0;
+}
+
+.logout{
+background:#ff4d4d;
+border:none;
+padding:8px 15px;
+color:white;
+cursor:pointer;
+border-radius:5px;
+}
+
+.logout:hover{
+background:red;
+}
+
+/* MAIN CARD */
+
+.container{
+width:90%;
+margin:40px auto;
+background:white;
+padding:25px;
+border-radius:10px;
+box-shadow:0 10px 30px rgba(0,0,0,0.3);
+animation:fadein 1s;
+}
+
+@keyframes fadein{
+from{opacity:0;transform:translateY(20px);}
+to{opacity:1;transform:translateY(0);}
+}
+
+/* ADD BUTTON */
+
+.addbtn{
+background:#28a745;
+color:white;
+border:none;
+padding:10px 18px;
+margin-bottom:15px;
+cursor:pointer;
+border-radius:5px;
+}
+
+.addbtn:hover{
+background:#1e7e34;
+}
+
+/* TABLE */
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+table th{
+background:#333;
+color:white;
+padding:10px;
+}
+
+table td{
+padding:10px;
+text-align:center;
+border-bottom:1px solid #ddd;
+}
+
+tr:hover{
+background:#f2f2f2;
+}
+
+/* BUTTONS */
+
+.edit{
+background:#007bff;
+border:none;
+color:white;
+padding:6px 12px;
+cursor:pointer;
+border-radius:4px;
+}
+
+.delete{
+background:#dc3545;
+border:none;
+color:white;
+padding:6px 12px;
+cursor:pointer;
+border-radius:4px;
+}
+
+.save{
+background:#28a745;
+border:none;
+color:white;
+padding:6px 12px;
+cursor:pointer;
+border-radius:4px;
+}
+
+/* POPUP FORM */
+
+.popup{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.5);
+display:none;
+justify-content:center;
+align-items:center;
+}
+
+.form-box{
+background:white;
+padding:25px;
+border-radius:10px;
+width:350px;
+animation:pop 0.4s;
+}
+
+@keyframes pop{
+from{transform:scale(0.6);}
+to{transform:scale(1);}
+}
+
+input,select{
+width:100%;
+padding:8px;
+margin:8px 0;
+}
+
+.close{
+background:red;
+color:white;
+border:none;
+padding:5px 10px;
+float:right;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- HEADER -->
+
+<div class="header">
+<h2>Admin Dashboard - Master Data</h2>
+<button class="logout">Logout</button>
+</div>
+
+<div class="container">
+
+<button class="addbtn" onclick="openForm()">+ Add New Machine</button>
+
+<table>
+
+<thead>
+
+<tr>
+<th>Part ID</th>
+<th>Part Name</th>
+<th>Station</th>
+<th>Required Manpower</th>
+<th>Skill Required</th>
+<th>Action</th>
+</tr>
+
+</thead>
+
+<tbody>
+
+{% for part in masterdata %}
+
+<tr>
+
+<td>{{part.part_id}}</td>
+<td contenteditable="true">{{part.part_name}}</td>
+<td contenteditable="true">{{part.station}}</td>
+<td contenteditable="true">{{part.required_manpower}}</td>
+<td contenteditable="true">{{part.skill_required}}</td>
+
+<td>
+
+<button class="save">Save</button>
+<button class="delete">Delete</button>
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+
+<!-- POPUP FORM -->
+
+<div class="popup" id="popup">
+
+<div class="form-box">
+
+<button class="close" onclick="closeForm()">X</button>
+
+<h3>Add Master Data</h3>
+
+<form method="POST" action="/add_master">
+
+<input type="number" name="part_id" placeholder="Part ID" required>
+
+<input type="text" name="part_name" placeholder="Part Name" required>
+
+<select name="station">
+
+<option>A</option>
+<option>B</option>
+<option>C</option>
+
+</select>
+
+<input type="number" name="required_manpower" placeholder="Required Manpower">
+
+<select name="skill_required">
+
+<option>L1</option>
+<option>L2</option>
+<option>L3</option>
+<option>L4</option>
+
+</select>
+
+<button class="addbtn" type="submit">Add Data</button>
+
+</form>
+
+</div>
+
+</div>
+
+<script>
+
+function openForm(){
+document.getElementById("popup").style.display="flex";
+}
+
+function closeForm(){
+document.getElementById("popup").style.display="none";
+}
+
+</script>
+
+</body>
+</html>

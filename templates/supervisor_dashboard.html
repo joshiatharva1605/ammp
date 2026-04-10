@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Supervisor Dashboard</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+background:#f4f6f9;
+}
+
+/* HEADER */
+
+.header{
+background:#0b2a5b;
+color:white;
+padding:15px;
+font-size:22px;
+font-weight:bold;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.menu{
+font-size:28px;
+cursor:pointer;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+position:fixed;
+top:0;
+right:-260px;
+width:260px;
+height:100%;
+background:#1f3b73;
+color:white;
+transition:0.3s;
+z-index:9999;
+padding-top:20px;
+}
+
+.closebtn{
+font-size:26px;
+cursor:pointer;
+padding:10px 20px;
+display:block;
+text-align:right;
+}
+
+.sidebar a{
+display:block;
+padding:18px;
+text-decoration:none;
+color:white;
+border-bottom:1px solid rgba(255,255,255,0.2);
+}
+
+.sidebar a:hover{
+background:#2e5aa7;
+}
+
+/* CARDS */
+
+.cards{
+display:flex;
+gap:15px;
+padding:20px;
+flex-wrap:wrap;
+}
+
+.card{
+background:#1f5fa5;
+color:white;
+padding:20px;
+width:180px;
+border-radius:6px;
+text-align:center;
+box-shadow:0 4px 8px rgba(0,0,0,0.2);
+}
+
+.card.dark{
+background:#0b2a5b;
+}
+
+.card h1{
+margin:0;
+}
+
+/* MAIN GRID */
+
+.main{
+display:flex;
+}
+
+/* CHART AREA */
+
+.charts{
+width:75%;
+padding:20px;
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:20px;
+}
+
+.section{
+background:white;
+padding:15px;
+border-radius:6px;
+box-shadow:0 4px 8px rgba(0,0,0,0.1);
+}
+
+.chart{
+height:200px;
+background:#e9eef5;
+display:flex;
+align-items:center;
+justify-content:center;
+color:#777;
+}
+
+/* RIGHT PANEL */
+
+.rightpanel{
+width:25%;
+padding:20px;
+}
+
+/* OPERATORS PANEL */
+
+.operatorbox{
+background:white;
+padding:15px;
+border-radius:6px;
+box-shadow:0 4px 8px rgba(0,0,0,0.1);
+}
+
+.operatorbox h3{
+margin-top:0;
+text-align:center;
+}
+
+.skillgrid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+}
+
+.req{
+background:#e6e6e6;
+padding:15px;
+text-align:center;
+border-radius:5px;
+}
+
+.avl{
+background:#f3dcd4;
+padding:15px;
+text-align:center;
+border-radius:5px;
+}
+
+/* ACTIONS PANEL */
+
+.actions{
+margin-top:20px;
+background:white;
+padding:15px;
+border-radius:6px;
+box-shadow:0 4px 8px rgba(0,0,0,0.1);
+}
+
+.actions div{
+background:#3d8ed8;
+color:white;
+padding:10px;
+margin:8px 0;
+border-radius:4px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+
+DOJO 2.0 Monitoring Dashboard - Plant Wise
+
+<div class="menu" onclick="openMenu()">☰</div>
+
+</div>
+
+<!-- SIDEBAR -->
+
+<div class="sidebar" id="sidebar">
+
+<div class="closebtn" onclick="closeMenu()">❌</div>
+
+<a href="/attendance">Attendance</a>
+<a href="/allocation">Allocation</a>
+<a href="/">Logout</a>
+
+</div>
+
+<!-- DASHBOARD CARDS -->
+
+<div class="cards">
+
+<div class="card dark">
+<h1>14</h1>
+<p>Total Stations</p>
+</div>
+
+<div class="card">
+<h1>49</h1>
+<p>Operators Required</p>
+</div>
+
+<div class="card">
+<h1>44</h1>
+<p>Operators Available</p>
+</div>
+
+<div class="card dark">
+<h1>5</h1>
+<p>Buffer Required</p>
+</div>
+
+<div class="card dark">
+<h1>4</h1>
+<p>Buffer Available</p>
+</div>
+
+</div>
+
+<div class="main">
+
+<div class="charts">
+
+<div class="section">
+<h3>Manpower Availability Trend</h3>
+<div class="chart">Chart Area</div>
+</div>
+
+<div class="section">
+<h3>Attrition Rate Trend</h3>
+<div class="chart">Chart Area</div>
+</div>
+
+<div class="section">
+<h3>Buffer Manpower Availability Trend</h3>
+<div class="chart">Chart Area</div>
+</div>
+
+<div class="section">
+<h3>Absenteeism Rate Trend</h3>
+<div class="chart">Chart Area</div>
+</div>
+
+</div>
+
+<div class="rightpanel">
+
+<div class="operatorbox">
+
+<h3>Operators Required Vs Available</h3>
+
+<div class="skillgrid">
+
+<div class="req">
+<h2>13</h2>
+L1 Required
+</div>
+
+<div class="avl">
+<h2>12</h2>
+L1 Available
+</div>
+
+<div class="req">
+<h2>11</h2>
+L2 Required
+</div>
+
+<div class="avl">
+<h2>10</h2>
+L2 Available
+</div>
+
+<div class="req">
+<h2>15</h2>
+L3 Required
+</div>
+
+<div class="avl">
+<h2>14</h2>
+L3 Available
+</div>
+
+<div class="req">
+<h2>10</h2>
+L4 Required
+</div>
+
+<div class="avl">
+<h2>9</h2>
+L4 Available
+</div>
+
+</div>
+
+</div>
+
+<div class="actions">
+
+<h4>Actions Planned for Manpower Shortage</h4>
+
+<div>Special perks</div>
+<div>Salary revision</div>
+<div>Buffer manpower planning</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+/* OPEN SIDEBAR */
+
+function openMenu(){
+document.getElementById("sidebar").style.right="0px";
+}
+
+/* CLOSE SIDEBAR */
+
+function closeMenu(){
+document.getElementById("sidebar").style.right="-260px";
+}
+
+/* CLOSE IF CLICK OUTSIDE */
+
+document.addEventListener("click",function(event){
+
+let sidebar=document.getElementById("sidebar");
+let menu=document.querySelector(".menu");
+
+if(
+sidebar.style.right=="0px" &&
+!sidebar.contains(event.target) &&
+!menu.contains(event.target)
+){
+closeMenu();
+}
+
+});
+
+</script>
+
+</body>
+</html>
