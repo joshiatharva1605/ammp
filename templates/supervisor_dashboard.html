@@ -3,571 +3,593 @@
 
 <head>
 
-<title>Supervisor Dashboard</title>
+    <title>Supervisor Dashboard</title>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<style>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+            background: #f4f6f9;
+        }
 
-body{
-margin:0;
-font-family:Arial;
-background:#f4f6f9;
-}
+        /* HEADER */
 
-/* HEADER */
+        .header {
+            background: #0b2a5b;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px;
+        }
 
-.header{
-background:#0b2a5b;
-color:white;
-display:flex;
-align-items:center;
-justify-content:space-between;
-padding:12px 20px;
-}
+        .header-left {
+            font-size: 22px;
+            font-weight: bold;
+        }
 
-.header-left{
-font-size:22px;
-font-weight:bold;
-}
+        /* PLANT NAME */
 
-/* PLANT NAME */
+        .plant-name {
+            color: #ffd700;
+            margin-left: 8px;
+            animation: glow 2s infinite alternate;
+        }
 
-.plant-name{
-color:#ffd700;
-margin-left:8px;
-animation:glow 2s infinite alternate;
-}
+        @keyframes glow {
 
-@keyframes glow{
+            0% {
+                text-shadow: 0 0 5px white;
+            }
 
-0%{text-shadow:0 0 5px white;}
+            100% {
+                text-shadow: 0 0 15px #ffd700;
+            }
 
-100%{text-shadow:0 0 15px #ffd700;}
+        }
 
-}
+        /* PLANT BUTTONS */
 
-/* PLANT BUTTONS */
+        .plant-buttons {
+            margin-top: 5px;
+        }
 
-.plant-buttons{
-margin-top:5px;
-}
+        .plant-buttons button {
+            background: #1f5fa5;
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            margin-right: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
 
-.plant-buttons button{
-background:#1f5fa5;
-border:none;
-color:white;
-padding:5px 10px;
-margin-right:5px;
-border-radius:4px;
-cursor:pointer;
-}
+        .plant-buttons button:hover {
+            background: #ffd700;
+            color: black;
+        }
 
-.plant-buttons button:hover{
-background:#ffd700;
-color:black;
-}
+        /* DATE */
 
-/* DATE */
+        .header-center {
+            font-size: 18px;
+            font-weight: bold;
+        }
 
-.header-center{
-font-size:18px;
-font-weight:bold;
-}
+        /* RIGHT */
 
-/* RIGHT */
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
 
-.header-right{
-display:flex;
-align-items:center;
-gap:15px;
-}
+        .logo {
+            height: 45px;
+        }
 
-.logo{
-height:45px;
-}
+        .menu {
+            font-size: 26px;
+            cursor: pointer;
+        }
 
-.menu{
-font-size:26px;
-cursor:pointer;
-}
+        /* SIDEBAR */
 
-/* SIDEBAR */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -260px;
+            width: 260px;
+            height: 100%;
+            background: #1f3b73;
+            color: white;
+            transition: 0.3s;
+            z-index: 9999;
+            padding-top: 20px;
+        }
 
-.sidebar{
-position:fixed;
-top:0;
-right:-260px;
-width:260px;
-height:100%;
-background:#1f3b73;
-color:white;
-transition:0.3s;
-z-index:9999;
-padding-top:20px;
-}
+        .closebtn {
+            font-size: 24px;
+            cursor: pointer;
+            padding: 10px 20px;
+            text-align: right;
+        }
 
-.closebtn{
-font-size:24px;
-cursor:pointer;
-padding:10px 20px;
-text-align:right;
-}
+        .sidebar a {
+            display: block;
+            padding: 18px;
+            text-decoration: none;
+            color: white;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
 
-.sidebar a{
-display:block;
-padding:18px;
-text-decoration:none;
-color:white;
-border-bottom:1px solid rgba(255,255,255,0.2);
-}
+        .sidebar a:hover {
+            background: #2e5aa7;
+        }
 
-.sidebar a:hover{
-background:#2e5aa7;
-}
+        /* CARDS */
 
-/* CARDS */
+        .cards {
+            display: flex;
+            gap: 15px;
+            padding: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
 
-.cards{
-display:flex;
-gap:15px;
-padding:20px;
-flex-wrap:wrap;
-align-items:center;
-}
+        .card {
+            background: #1f5fa5;
+            color: white;
+            padding: 20px;
+            width: 180px;
+            border-radius: 6px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
 
-.card{
-background:#1f5fa5;
-color:white;
-padding:20px;
-width:180px;
-border-radius:6px;
-text-align:center;
-box-shadow:0 4px 8px rgba(0,0,0,0.2);
-}
+        .card.dark {
+            background: #0b2a5b;
+        }
 
-.card.dark{
-background:#0b2a5b;
-}
+        .card h1 {
+            margin: 0;
+        }
 
-.card h1{
-margin:0;
-}
+        /* FILTERS */
 
-/* FILTERS */
+        .filters {
+            display: flex;
+            gap: 10px;
+            margin-left: auto;
+        }
 
-.filters{
-display:flex;
-gap:10px;
-margin-left:auto;
-}
+        .filters select {
+            padding: 7px;
+            border-radius: 4px;
+        }
 
-.filters select{
-padding:7px;
-border-radius:4px;
-}
+        /* MAIN */
 
-/* MAIN */
+        .main {
+            display: flex;
+        }
 
-.main{
-display:flex;
-}
+        /* CHART GRID */
 
-/* CHART GRID */
+        .charts {
+            width: 75%;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
 
-.charts{
-width:75%;
-padding:20px;
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:20px;
-}
+        .section {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
 
-.section{
-background:white;
-padding:15px;
-border-radius:6px;
-box-shadow:0 4px 8px rgba(0,0,0,0.1);
-}
+        /* GRAPH HEADER */
 
-/* GRAPH HEADER */
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
 
-.chart-header{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:10px;
-}
+        .dateSelect {
+            padding: 5px;
+            border-radius: 4px;
+        }
 
-.dateSelect{
-padding:5px;
-border-radius:4px;
-}
+        /* RIGHT PANEL */
 
-/* RIGHT PANEL */
+        .rightpanel {
+            width: 25%;
+            padding: 20px;
+        }
 
-.rightpanel{
-width:25%;
-padding:20px;
-}
+        .operatorbox {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
 
-.operatorbox{
-background:white;
-padding:15px;
-border-radius:6px;
-box-shadow:0 4px 8px rgba(0,0,0,0.1);
-}
+        .operatorbox h3 {
+            margin-top: 0;
+            text-align: center;
+        }
 
-.operatorbox h3{
-margin-top:0;
-text-align:center;
-}
+        .skillgrid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
 
-.skillgrid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:10px;
-}
+        .req {
+            background: #e6e6e6;
+            padding: 15px;
+            text-align: center;
+            border-radius: 5px;
+        }
 
-.req{
-background:#e6e6e6;
-padding:15px;
-text-align:center;
-border-radius:5px;
-}
-
-.avl{
-background:#f3dcd4;
-padding:15px;
-text-align:center;
-border-radius:5px;
-}
-
-</style>
+        .avl {
+            background: #f3dcd4;
+            padding: 15px;
+            text-align: center;
+            border-radius: 5px;
+        }
+    </style>
 
 </head>
 
 <body>
 
-<!-- HEADER -->
+    <!-- HEADER -->
 
-<div class="header">
+    <div class="header">
 
-<div class="header-left">
+        <div class="header-left">
 
-DOJO 2.0 Monitoring Dashboard -
+            DOJO 2.0 Monitoring Dashboard -
 
-<span class="plant-name" id="plantName">P01 Pantnagar</span>
+            <span class="plant-name" id="plantName">P01 Pantnagar</span>
 
-<div class="plant-buttons">
+            <div class="plant-buttons">
 
-<button onclick="setPlant('P01 Pantnagar')">P01</button>
-<button onclick="setPlant('P02 Chakan')">P02</button>
-<button onclick="setPlant('P03 Bangalore')">P03</button>
+                <button onclick="setPlant('P01 Pantnagar')">P01</button>
+                <button onclick="setPlant('P02 Chakan')">P02</button>
+                <button onclick="setPlant('P03 Bangalore')">P03</button>
 
-</div>
+            </div>
 
-</div>
+        </div>
 
-<div class="header-center" id="currentDate"></div>
+        <div class="header-center" id="currentDate"></div>
 
-<div class="header-right">
+        <div class="header-right">
 
-<img class="logo"
-src="https://jipmglobal.com/wp-content/uploads/2021/06/41.-ADVIK-HI-TECH-PVT-.LTD_.jpg">
+            <img class="logo" src="https://jipmglobal.com/wp-content/uploads/2021/06/41.-ADVIK-HI-TECH-PVT-.LTD_.jpg">
 
-<div class="menu" onclick="openMenu()">☰</div>
+            <div class="menu" onclick="openMenu()">☰</div>
 
-</div>
+        </div>
 
-</div>
+    </div>
 
-<!-- SIDEBAR -->
+    <!-- SIDEBAR -->
 
-<div class="sidebar" id="sidebar">
+    <div class="sidebar" id="sidebar">
 
-<div class="closebtn" onclick="closeMenu()">❌</div>
+        <div class="closebtn" onclick="closeMenu()">❌</div>
 
-<a href="/attendance">Attendance</a>
-<a href="/allocation">Allocation</a>
-<a href="/total-workers">Total Workers</a>
-<a href="/machine-plant">Machine Plant</a>
-<a href="/">Logout</a>
+        <a href="/attendance">Attendance</a>
+        <a href="/allocation">Allocation</a>
+        <a href="/total-workers">Total Workers</a>
+        <a href="/machine-plant">Machine Plant</a>
+        <a href="/">Logout</a>
 
-</div>
+    </div>
 
-<!-- CARDS -->
+    <!-- CARDS -->
 
-<div class="cards">
+    <div class="cards">
 
-<div class="card dark">
-<h1>14</h1>
-<p>Total Stations</p>
-</div>
+        <div class="card dark">
+            <h1>14</h1>
+            <p>Total Stations</p>
+        </div>
 
-<div class="card">
-<h1>49</h1>
-<p>Operators Required</p>
-</div>
+        <div class="card">
+            <h1>49</h1>
+            <p>Operators Required</p>
+        </div>
 
-<div class="card">
-<h1>44</h1>
-<p>Operators Available</p>
-</div>
+        <div class="card">
+            <h1>44</h1>
+            <p>Operators Available</p>
+        </div>
 
-<div class="card dark">
-<h1>5</h1>
-<p>Buffer Required</p>
-</div>
+        <div class="card dark">
+            <h1>5</h1>
+            <p>Buffer Required</p>
+        </div>
 
-<div class="card dark">
-<h1>4</h1>
-<p>Buffer Available</p>
-</div>
+        <div class="card dark">
+            <h1>4</h1>
+            <p>Buffer Available</p>
+        </div>
 
-<div class="filters">
+        <div class="filters">
 
-<select id="monthSelect">
-<option>Jan</option>
-<option>Feb</option>
-<option>Mar</option>
-<option>Apr</option>
-<option>May</option>
-<option>Jun</option>
-<option>Jul</option>
-<option>Aug</option>
-<option>Sep</option>
-<option>Oct</option>
-<option>Nov</option>
-<option>Dec</option>
-</select>
+            <select id="monthSelect">
+                <option>Jan</option>
+                <option>Feb</option>
+                <option>Mar</option>
+                <option>Apr</option>
+                <option>May</option>
+                <option>Jun</option>
+                <option>Jul</option>
+                <option>Aug</option>
+                <option>Sep</option>
+                <option>Oct</option>
+                <option>Nov</option>
+                <option>Dec</option>
+            </select>
 
-<select id="yearSelect"></select>
+            <select id="yearSelect"></select>
 
-</div>
+        </div>
 
-</div>
+    </div>
 
-<!-- MAIN -->
+    <!-- MAIN -->
 
-<div class="main">
+    <div class="main">
 
-<div class="charts">
+        <div class="charts">
 
-<!-- MANPOWER -->
+            <!-- MANPOWER -->
 
-<div class="section">
+            <div class="section">
 
-<div class="chart-header">
+                <div class="chart-header">
 
-<h3>Manpower Availability Trend</h3>
+                    <h3>Manpower Availability Trend</h3>
 
-<select class="dateSelect" onchange="loadGraph('manpowerChart',this.value)">
-<script>
-for(let i=1;i<=31;i++){
-document.write(`<option value="${i}">${i}</option>`)
-}
-</script>
-</select>
+                    <select class="dateSelect" onchange="loadGraph('manpowerChart',this.value)">
+                        <option value="monthly">Monthly</option>
+                        <script>
+                            for (let i = 1; i <= 31; i++) {
+                                document.write(`<option value="${i}">${i}</option>`)
+                            }
+                        </script>
+                    </select>
 
-</div>
+                </div>
 
-<canvas id="manpowerChart"></canvas>
+                <canvas id="manpowerChart"></canvas>
 
-</div>
+            </div>
 
-<!-- ATTRITION -->
+            <!-- ATTRITION -->
 
-<div class="section">
+            <div class="section">
 
-<div class="chart-header">
+                <div class="chart-header">
 
-<h3>Attrition Rate Trend</h3>
+                    <h3>Attrition Rate Trend</h3>
 
-<select class="dateSelect" onchange="loadGraph('attritionChart',this.value)">
-<script>
-for(let i=1;i<=31;i++){
-document.write(`<option value="${i}">${i}</option>`)
-}
-</script>
-</select>
+                    <select class="dateSelect" onchange="loadGraph('attritionChart',this.value)">
+                        <option value="monthly">Monthly</option>
+                        <script>
+                            for (let i = 1; i <= 31; i++) {
+                                document.write(`<option value="${i}">${i}</option>`)
+                            }
+                        </script>
+                    </select>
 
-</div>
+                </div>
 
-<canvas id="attritionChart"></canvas>
+                <canvas id="attritionChart"></canvas>
 
-</div>
+            </div>
 
-<!-- BUFFER -->
+            <!-- BUFFER -->
 
-<div class="section">
+            <div class="section">
 
-<div class="chart-header">
+                <div class="chart-header">
 
-<h3>Buffer Manpower Availability Trend</h3>
+                    <h3>Buffer Manpower Availability Trend</h3>
 
-<select class="dateSelect" onchange="loadGraph('bufferChart',this.value)">
-<script>
-for(let i=1;i<=31;i++){
-document.write(`<option value="${i}">${i}</option>`)
-}
-</script>
-</select>
+                    <select class="dateSelect" onchange="loadGraph('bufferChart',this.value)">
+                        <option value="monthly">Monthly</option>
+                        <script>
+                            for (let i = 1; i <= 31; i++) {
+                                document.write(`<option value="${i}">${i}</option>`)
+                            }
+                        </script>
+                    </select>
 
-</div>
+                </div>
 
-<canvas id="bufferChart"></canvas>
+                <canvas id="bufferChart"></canvas>
 
-</div>
+            </div>
 
-<!-- ABSENTEE -->
+            <!-- ABSENTEE -->
 
-<div class="section">
+            <div class="section">
 
-<div class="chart-header">
+                <div class="chart-header">
 
-<h3>Absenteeism Rate Trend</h3>
+                    <h3>Absenteeism Rate Trend</h3>
 
-<select class="dateSelect" onchange="loadGraph('absenteeChart',this.value)">
-<script>
-for(let i=1;i<=31;i++){
-document.write(`<option value="${i}">${i}</option>`)
-}
-</script>
-</select>
+                    <select class="dateSelect" onchange="loadGraph('absenteeChart',this.value)">
+                        <option value="monthly">Monthly</option>
+                        <script>
+                            for (let i = 1; i <= 31; i++) {
+                                document.write(`<option value="${i}">${i}</option>`)
+                            }
+                        </script>
+                    </select>
 
-</div>
+                </div>
 
-<canvas id="absenteeChart"></canvas>
+                <canvas id="absenteeChart"></canvas>
 
-</div>
+            </div>
 
-</div>
+        </div>
 
-<!-- RIGHT PANEL -->
+        <!-- RIGHT PANEL -->
 
-<div class="rightpanel">
+        <div class="rightpanel">
 
-<div class="operatorbox">
+            <div class="operatorbox">
 
-<h3>Operators Required Vs Available</h3>
+                <h3>Operators Required Vs Available</h3>
 
-<div class="skillgrid">
+                <div class="skillgrid">
 
-<div class="req"><h2>13</h2>L1 Required</div>
-<div class="avl"><h2>12</h2>L1 Available</div>
+                    <div class="req">
+                        <h2>13</h2>L1 Required
+                    </div>
+                    <div class="avl">
+                        <h2>12</h2>L1 Available
+                    </div>
 
-<div class="req"><h2>11</h2>L2 Required</div>
-<div class="avl"><h2>10</h2>L2 Available</div>
+                    <div class="req">
+                        <h2>11</h2>L2 Required
+                    </div>
+                    <div class="avl">
+                        <h2>10</h2>L2 Available
+                    </div>
 
-<div class="req"><h2>15</h2>L3 Required</div>
-<div class="avl"><h2>14</h2>L3 Available</div>
+                    <div class="req">
+                        <h2>15</h2>L3 Required
+                    </div>
+                    <div class="avl">
+                        <h2>14</h2>L3 Available
+                    </div>
 
-<div class="req"><h2>10</h2>L4 Required</div>
-<div class="avl"><h2>9</h2>L4 Available</div>
+                    <div class="req">
+                        <h2>10</h2>L4 Required
+                    </div>
+                    <div class="avl">
+                        <h2>9</h2>L4 Available
+                    </div>
 
-</div>
+                </div>
 
-</div>
+            </div>
 
-</div>
+        </div>
 
-</div>
+    </div>
 
-<script>
+    <script>
 
-/* CURRENT DATE WITH DAY */
+        /* CURRENT DATE WITH DAY */
 
-let today=new Date()
+        let today = new Date()
 
-let days=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
+        let days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 
-let day=days[today.getDay()]
+        let day = days[today.getDay()]
 
-let dd=String(today.getDate()).padStart(2,'0')
-let mm=String(today.getMonth()+1).padStart(2,'0')
-let yyyy=today.getFullYear()
+        let dd = String(today.getDate()).padStart(2, '0')
+        let mm = String(today.getMonth() + 1).padStart(2, '0')
+        let yyyy = today.getFullYear()
 
-document.getElementById("currentDate").innerText=
-day+", "+dd+"-"+mm+"-"+yyyy
+        document.getElementById("currentDate").innerText =
+            day + ", " + dd + "-" + mm + "-" + yyyy
 
-/* YEAR DROPDOWN */
+        /* YEAR DROPDOWN */
 
-let yearSelect=document.getElementById("yearSelect")
+        let yearSelect = document.getElementById("yearSelect")
 
-let currentYear=new Date().getFullYear()
+        let currentYear = new Date().getFullYear()
 
-for(let y=2000;y<=currentYear;y++){
+        for (let y = 2000; y <= currentYear; y++) {
 
-let option=document.createElement("option")
-option.value=y
-option.text=y+"-"+(y+1)
+            let option = document.createElement("option")
+            option.value = y
+            option.text = y + "-" + (y + 1)
 
-yearSelect.appendChild(option)
+            yearSelect.appendChild(option)
 
-}
+        }
 
-/* SET PLANT */
+        /* SET PLANT */
 
-function setPlant(name){
-document.getElementById("plantName").innerText=name
-}
+        function setPlant(name) {
+            document.getElementById("plantName").innerText = name
+        }
 
-/* SIDEBAR */
+        /* SIDEBAR */
 
-function openMenu(){
-document.getElementById("sidebar").style.right="0px"
-}
+        function openMenu() {
+            document.getElementById("sidebar").style.right = "0px"
+        }
 
-function closeMenu(){
-document.getElementById("sidebar").style.right="-260px"
-}
+        function closeMenu() {
+            document.getElementById("sidebar").style.right = "-260px"
+        }
 
-/* CHARTS */
+        /* CHARTS */
 
-let manpowerChart=new Chart(
-document.getElementById("manpowerChart"),
-{type:"bar",data:{labels:[],datasets:[{label:"Manpower",data:[]}]} }
-)
+        let manpowerChart = new Chart(
+            document.getElementById("manpowerChart"),
+            { type: "bar", data: { labels: [], datasets: [{ label: "Manpower", data: [] }] } }
+        )
 
-let attritionChart=new Chart(
-document.getElementById("attritionChart"),
-{type:"line",data:{labels:[],datasets:[{label:"Attrition",data:[]}]} }
-)
+        let attritionChart = new Chart(
+            document.getElementById("attritionChart"),
+            { type: "line", data: { labels: [], datasets: [{ label: "Attrition", data: [] }] } }
+        )
 
-let bufferChart=new Chart(
-document.getElementById("bufferChart"),
-{type:"line",data:{labels:[],datasets:[{label:"Buffer",data:[]}]} }
-)
+        let bufferChart = new Chart(
+            document.getElementById("bufferChart"),
+            { type: "line", data: { labels: [], datasets: [{ label: "Buffer", data: [] }] } }
+        )
 
-let absenteeChart=new Chart(
-document.getElementById("absenteeChart"),
-{type:"line",data:{labels:[],datasets:[{label:"Absentee",data:[]}]} }
-)
+        let absenteeChart = new Chart(
+            document.getElementById("absenteeChart"),
+            { type: "line", data: { labels: [], datasets: [{ label: "Absentee", data: [] }] } }
+        )
 
-/* GRAPH LOADER */
+        /* GRAPH LOADER */
 
-function loadGraph(chartId,date){
+        function loadGraph(chartId, date) {
 
-let month=document.getElementById("monthSelect").value
-let year=document.getElementById("yearSelect").value
+            let month = document.getElementById("monthSelect").value
+            let year = document.getElementById("yearSelect").value
 
-fetch(`/graph-data?chart=${chartId}&date=${date}&month=${month}&year=${year}`)
-.then(res=>res.json())
-.then(data=>{
+            fetch(`/graph-data?chart=${chartId}&date=${date}&month=${month}&year=${year}`)
+                .then(res => res.json())
+                .then(data => {
 
-let chart=Chart.getChart(chartId)
+                    let chart = Chart.getChart(chartId)
 
-chart.data.labels=data.labels
-chart.data.datasets[0].data=data.values
+                    chart.data.labels = data.labels
+                    chart.data.datasets[0].data = data.values
 
-chart.update()
+                    chart.update()
 
-})
+                })
 
-}
+        }
 
-</script>
+    </script>
 
 </body>
+
 </html>
