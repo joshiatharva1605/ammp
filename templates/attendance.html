@@ -4,171 +4,212 @@
 <title>Attendance</title>
 
 <style>
-
 body{
-font-family:Arial;
-margin:0;
-background:#f4f6f9;
+    font-family:Arial;
+    margin:0;
+    background:#f4f6f9;
 }
 
 .header{
-background:#0b2a5b;
-color:white;
-padding:15px;
-font-size:20px;
+    background:#0b2a5b;
+    color:white;
+    padding:15px;
+    font-size:20px;
 }
 
 .container{
-padding:20px;
+    padding:20px;
 }
 
 .searchbox{
-margin-bottom:20px;
+    margin-bottom:20px;
 }
 
 .searchbox input{
-padding:10px;
-width:250px;
-border-radius:5px;
-border:1px solid #ccc;
+    padding:10px;
+    width:250px;
+    border-radius:5px;
+    border:1px solid #ccc;
 }
 
 table{
-width:100%;
-border-collapse:collapse;
-background:white;
-box-shadow:0 4px 10px rgba(0,0,0,0.1);
+    width:100%;
+    border-collapse:collapse;
+    background:white;
+    box-shadow:0 4px 10px rgba(0,0,0,0.1);
 }
 
 th{
-background:#1f5fa5;
-color:white;
-padding:12px;
+    background:#1f5fa5;
+    color:white;
+    padding:12px;
 }
 
 td{
-padding:10px;
-text-align:center;
-border-bottom:1px solid #ddd;
+    padding:10px;
+    text-align:center;
+    border-bottom:1px solid #ddd;
 }
 
 tr:hover{
-background:#f1f1f1;
+    background:#f1f1f1;
 }
 
-button{
-margin-top:15px;
-padding:10px 20px;
-background:#1f5fa5;
-color:white;
-border:none;
-border-radius:5px;
-cursor:pointer;
+/* ACTION CONTROLS ALIGNMENT */
+.action-panel {
+    margin-top: 20px;
+    display: flex;
+    gap: 12px;
+}
+
+button, .back-btn {
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease;
+    box-sizing: border-box;
+    height: 40px;
+}
+
+button {
+    background:#1f5fa5;
+    color:white;
+    border:none;
 }
 
 button:hover{
-background:#0b2a5b;
+    background:#0b2a5b;
 }
 
-.back{
-margin-top:15px;
-display:inline-block;
-text-decoration:none;
-color:white;
-background:#444;
-padding:8px 15px;
-border-radius:5px;
+.back-btn {
+    background: #475569;
+    color: white;
+    border: none;
 }
 
+.back-btn:hover {
+    background: #1e293b;
+}
 </style>
-
 </head>
 
 <body>
 
 <div class="header">
-Operator Attendance
+    Operator Attendance
 </div>
 
 <div class="container">
 
-<div class="searchbox">
+    <div class="searchbox">
+        <input type="text" id="searchInput" placeholder="Search by Employee ID">
+    </div>
 
-<input type="text" id="searchInput" placeholder="Search by Employee ID">
+    <table id="attendanceTable">
+        <thead>
+            <tr>
+                <th>Employee ID</th>
+                <th>Name</th>
+                <th>Skill Level</th>
+                <th>Present</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for emp in employees %}
+        <tr>
+            <td>{{ emp.emp_id }}</td>
+            <td>{{ emp.emp_name }}</td>
+            <td>{{ emp.skill_level }}</td>
+            <td>
+                <input type="checkbox" class="attendance-check" value="{{ emp.emp_id }}">
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 
-</div>
-
-<form method="POST" action="/save_attendance">
-
-<table id="attendanceTable">
-
-<thead>
-<tr>
-
-<th>Employee ID</th>
-<th>Name</th>
-<th>Skill Level</th>
-<th>Present</th>
-
-</tr>
-</thead>
-
-<tbody>
-
-{% for emp in employees %}
-
-<tr>
-
-<td>{{ emp.emp_id }}</td>
-<td>{{ emp.emp_name }}</td>
-<td>{{ emp.skill }}</td>
-
-<td>
-<input type="checkbox" name="attendance" value="{{ emp.emp_id }}">
-</td>
-
-</tr>
-
-{% endfor %}
-
-</tbody>
-
-</table>
-
-<button type="submit">Save Attendance</button>
-
-</form>
-
-<br>
-
-<a class="back" href="/supervisor">Back to Dashboard</a>
+    <div class="action-panel">
+        <button onclick="saveAttendance()">
+            Save Attendance
+        </button>
+        
+        <a class="back-btn" href="/supervisor_dashboard" onclick="goBackFallback(event)">
+            Go Back
+        </a>
+    </div>
 
 </div>
 
 <script>
+/* ========================================= */
+/* NAVIGATION FALLBACK */
+/* ========================================= */
+function goBackFallback(event) {
+    // If history exists, use it to preserve view state, otherwise let href route native
+    if (document.referrer) {
+        event.preventDefault();
+        window.history.back();
+    }
+}
 
+/* ========================================= */
 /* SEARCH FUNCTION */
-
+/* ========================================= */
 document.getElementById("searchInput").addEventListener("keyup", function() {
+    let filter = this.value.toUpperCase();
+    let rows = document.querySelector("#attendanceTable tbody").rows;
 
-let filter = this.value.toUpperCase();
-let rows = document.querySelector("#attendanceTable tbody").rows;
-
-for (let i = 0; i < rows.length; i++) {
-
-let id = rows[i].cells[0].textContent.toUpperCase();
-
-if (id.indexOf(filter) > -1) {
-rows[i].style.display = "";
-}
-else {
-rows[i].style.display = "none";
-}
-
-}
-
+    for (let i = 0; i < rows.length; i++) {
+        let id = rows[i].cells[0].textContent.toUpperCase();
+        if (id.indexOf(filter) > -1) {
+            rows[i].style.display = "";
+        }
+        else {
+            rows[i].style.display = "none";
+        }
+    }
 });
 
+/* ========================================= */
+/* SAVE ATTENDANCE */
+/* ========================================= */
+async function saveAttendance(){
+    let rows = document.querySelectorAll("#attendanceTable tbody tr");
+    let attendanceData = [];
+
+    rows.forEach(row => {
+        let emp_id = row.cells[0].innerText;
+        let checked = row.querySelector(".attendance-check").checked;
+
+        attendanceData.push({
+            emp_id: emp_id,
+            status: checked ? "Present" : "Absent"
+        });
+    });
+
+    try{
+        let response = await fetch("/api/save_attendance",{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify(attendanceData)
+        });
+
+        let data = await response.json();
+        alert(data.message);
+    }
+    catch(error){
+        console.error(error);
+        alert("Error Saving Attendance");
+    }
+}
 </script>
 
 </body>

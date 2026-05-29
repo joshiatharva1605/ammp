@@ -5,73 +5,202 @@
 <title>Allocation Panel</title>
 
 <style>
-body { font-family: Arial; margin: 0; background: #eef2f7; }
-
-.header {
-    display: flex; justify-content: space-between; align-items: center;
-    background: #1e3a5f; color: white; padding: 10px 20px;
+body{
+    font-family:Arial;
+    margin:0;
+    background:#eef2f7;
 }
 
-.container { display: flex; height: calc(100vh - 60px); }
-
-.left { width: 70%; padding: 20px; }
-.right { width: 30%; background: white; padding: 15px; border-left: 2px solid #ccc; }
-
-.box {
-    background: white; padding: 15px; border-radius: 10px;
-    margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-.title { font-weight: bold; margin-bottom: 10px; }
-
-.btn {
-    padding: 6px 12px; margin: 5px; border: none;
-    border-radius: 6px; background: #d1d5db; cursor: pointer;
-}
-
-.btn.active {
-    background: #1d4ed8; color: white;
-    box-shadow: 0 0 6px rgba(0,0,255,0.6);
-}
-
-.btn.disabled {
-    background: #aaa;
-    cursor: not-allowed;
-    pointer-events: none;
-}
-
-.vertical { display: flex; flex-direction: column; }
-.horizontal { display: flex; flex-wrap: wrap; }
-
-/* WORKER BLOCK */
-.worker {
-    width: 90px;
-    height: 50px;
-    background: #60a5fa;
-    margin: 5px;
-    border-radius: 5px;
+.header{
     display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:#1e3a5f;
+    color:white;
+    padding:10px 20px;
+}
+
+.container{
+    display:flex;
+    height:calc(100vh - 60px);
+}
+
+.left{
+    width:70%;
+    padding:20px;
+}
+
+.right{
+    width:30%;
+    background:white;
+    padding:15px;
+    border-left:2px solid #ccc;
+    overflow-y:auto;
+}
+
+.box{
+    background:white;
+    padding:15px;
+    border-radius:10px;
+    margin-bottom:15px;
+    box-shadow:0 2px 5px rgba(0,0,0,0.1);
+}
+
+.title{
+    font-weight:bold;
+    margin-bottom:10px;
+}
+
+.btn{
+    padding:6px 12px;
+    margin:5px;
+    border:none;
+    border-radius:6px;
+    background:#d1d5db;
+    cursor:pointer;
+}
+
+.btn.active{
+    background:#1d4ed8;
+    color:white;
+}
+
+.worker{
+    width:120px;
+    min-height:80px;
+    background:#60a5fa;
+    margin:5px;
+    border-radius:5px;
+    display:flex;
+    flex-direction:column;
     align-items:center;
     justify-content:center;
-    font-size:12px;
-    text-align:center;
+    font-size:11px;
     color:white;
-    padding:4px;
-    overflow:hidden;
-    white-space:nowrap;
-    text-overflow:ellipsis;
+    position:relative;
+    padding:5px;
+    text-align:center;
 }
 
-/* DRAG HOVER */
-.worker.hover {
-    outline: 3px dashed #1d4ed8;
+.worker.saved{
+    background:#10b981;
 }
 
-/* OPERATOR */
-.operator {
-    padding: 8px;
+/* BUFFER DESIGN CONFIGURATIONS */
+.worker.buffer-block {
+    background: #f59e0b; /* Amber alert color for unassigned buffers */
+}
+
+.worker.buffer-block.saved {
+    background: #b45309; /* Deep rust-gold for active assigned buffers */
+}
+
+.buffer-badge {
+    background: rgba(255, 255, 255, 0.25);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 9px;
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-top: 4px;
+}
+
+@keyframes shake{
+    0%{transform:translateX(0);}
+    25%{transform:translateX(-5px);}
+    50%{transform:translateX(5px);}
+    75%{transform:translateX(-5px);}
+    100%{transform:translateX(0);}
+}
+
+.shake{
+    animation:shake 0.3s ease-in-out;
+    background:#f87171 !important;
+}
+
+.bin-btn{
+    position:absolute;
+    top:2px;
+    right:2px;
+    background:rgba(255,255,255,0.2);
+    border:none;
+    color:white;
+    font-size:10px;
+    cursor:pointer;
+}
+
+.modal-overlay{
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.5);
+    z-index:100;
+    justify-content:center;
+    align-items:center;
+}
+
+.modal-content{
+    background:white;
+    padding:20px;
+    border-radius:8px;
+    width:300px;
+}
+
+.operator{
+    padding:8px;
+    border-bottom:1px solid #ddd;
+    cursor:grab;
+}
+
+/* HISTORY VIEW MODAL SPECIFICS */
+.history-modal-content {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 850px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.history-table th {
+    background: #1e3a5f;
+    color: white;
+    padding: 10px;
+    text-align: left;
+    font-size: 14px;
+}
+
+.history-table td {
+    padding: 10px;
     border-bottom: 1px solid #ddd;
-    cursor: grab;
+    font-size: 13px;
+}
+
+.history-filters {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+    background: #f4f6f9;
+    padding: 12px;
+    border-radius: 6px;
+}
+
+.history-filters input[type="date"] {
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }
 </style>
 </head>
@@ -79,170 +208,391 @@ body { font-family: Arial; margin: 0; background: #eef2f7; }
 <body>
 
 <div class="header">
-    <div><b>Allocation Panel</b></div>
-    <div id="date"></div>
+    <div>
+        <b>Allocation Panel</b>
+        <button class="btn" style="background:#475569;color:white;margin-left:20px;" onclick="goBackSafely()">
+            ⬅ Go Back
+        </button>
+    </div>
+
+    <div>
+        <span id="date" style="margin-right:15px; font-weight:bold;"></span>
+        <button class="btn" style="background:#0284c7;color:white;" onclick="openHistoryModal()">
+            📊 Show Allocation History
+        </button>
+        <button class="btn" style="background:#16a34a;color:white;margin-left:10px;" onclick="saveAllocation()">
+            Save Allocation
+        </button>
+    </div>
 </div>
 
 <div class="container">
+    <div class="left">
+        <div class="box" id="partBox">
+            <div class="title">Machine Name</div>
+        </div>
 
-<div class="left">
+        <div class="box" id="partNoBox" style="display:none;">
+            <div class="title">Part Number</div>
+            <div id="partNoList"></div>
+        </div>
 
-<div class="box">
-<div class="title">Part Name</div>
-<button class="btn part" onclick="selectPart(this,'Tensioner')">Tensioner</button>
-<button class="btn part" onclick="selectPart(this,'De-Compression')">De-Compression</button>
-<button class="btn part" onclick="selectPart(this,'Oil Pump')">Oil Pump</button>
-<button class="btn part" onclick="selectPart(this,'Drum Gear Shifter')">Drum Gear Shifter</button>
+        <div class="box" id="stationBox" style="display:none;">
+            <div class="title">Stations</div>
+            <div id="stationList"></div>
+        </div>
+
+        <div class="box" id="workerBox" style="display:none;">
+            <div class="title">Worker Lines</div>
+            <div id="workers" style="display:flex;flex-wrap:wrap;"></div>
+        </div>
+    </div>
+
+    <div class="right" id="operatorList">
+        <div class="title">Available Operators</div>
+    </div>
 </div>
 
-<div class="box" id="partNoBox" style="display:none;">
-<div class="title">Part Number</div>
-<div id="partNoList"></div>
+<div class="modal-overlay" id="deleteModal">
+    <div class="modal-content">
+        <div class="title">Remove Assignment</div>
+        <div id="modalList" style="margin:15px 0;"></div>
+        <div style="text-align:right;">
+            <button class="btn" onclick="closeModal()">Cancel</button>
+            <button class="btn" style="background:#ef4444;color:white;" onclick="confirmDeletion()">Delete</button>
+        </div>
+    </div>
 </div>
 
-<div class="box" id="stationBox" style="display:none;">
-<div class="title">Stations</div>
-<div id="stationList" class="vertical"></div>
-</div>
+<div class="modal-overlay" id="historyModal">
+    <div class="history-modal-content">
+        <div class="title" style="font-size: 18px; color: #1e3a5f;">View Historical Database Allocations</div>
+        
+        <div class="history-filters">
+            <label for="historyDate" style="font-weight:bold; font-size:13px;">Select Execution Date:</label>
+            <input type="date" id="historyDate">
+            <button class="btn active" onclick="loadAllocationsByDate()">Fetch Logs</button>
+        </div>
 
-<div class="box" id="machineBox" style="display:none;">
-<div class="title">Machines</div>
-<div id="machineList"></div>
-</div>
+        <div style="max-height: 50vh; overflow-y: auto; border: 1px solid #ddd; border-radius: 6px; background:#fff;">
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>Employee ID</th>
+                        <th>Employee Name</th>
+                        <th>Machine Assignment</th>
+                        <th>Part Number</th>
+                        <th>Shop Line</th>
+                        <th>Station Mapping</th>
+                    </tr>
+                </thead>
+                <tbody id="historyTableBody">
+                    <tr>
+                        <td colspan="6" style="text-align:center; color:gray; padding:20px;">Select a date and click fetch to render logs.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
-<div class="box" id="workerBox" style="display:none;">
-<div class="title">Worker Lines</div>
-<div id="workers" class="horizontal"></div>
-</div>
-
-</div>
-
-<div class="right">
-<div class="title">Available Operators</div>
-<div class="operator" draggable="true" ondragstart="drag(event)" data-name="John">John - Skill 3</div>
-<div class="operator" draggable="true" ondragstart="drag(event)" data-name="Amit">Amit - Skill 2</div>
-<div class="operator" draggable="true" ondragstart="drag(event)" data-name="Ravi">Ravi - Skill 4</div>
-<div class="operator" draggable="true" ondragstart="drag(event)" data-name="Sara">Sara - Skill 1</div>
-</div>
-
+        <div style="text-align:right; margin-top:20px;">
+            <button class="btn" style="background:#475569; color:white;" onclick="closeHistoryModal()">Close Tab</button>
+        </div>
+    </div>
 </div>
 
 <script>
+let db_data = {};
+let currentTargetBlock = null;
+let savedAllocations = [];
 
-// DATE
-let d = new Date();
-document.getElementById("date").innerHTML =
-`${String(d.getDate()).padStart(2,'0')}-${String(d.getMonth()+1).padStart(2,'0')}-${d.getFullYear()}`;
-
-// DATA (same as before)
-const data = {
-"Tensioner":{
-"A50500000000":{"M/C Shop":{A:2,B:2,C:2},"Assy.Shop":{A:16},"Paint Shop":{A:5,B:5,C:5},"HT":{A:2,B:2,C:1},"Shot Blasting":{S1:1,S2:1}},
-"A67800000000":{"M/C Shop":{A:2,B:2,C:2},"Assy.Shop":{A:12},"Paint Shop":{A:5,B:5,C:5},"HT":{A:2,B:2,C:1},"Shot Blasting":{S1:1,S2:1}}
-},
-"De-Compression":{
-"A41200000000":{"Assy.Shop":{A:4,B:4,C:4}},
-"B13300000000":{"Assy.Shop":{A:2,B:2,C:2}},
-"B18400000000":{"Assy.Shop":{A:6,B:6,C:6}},
-"B18600000000":{"Assy.Shop":{A:6,B:6,C:6}}
-},
-"Oil Pump":{
-"A49200000000":{"M/C Shop":{A:9,B:9,C:9},"Assy.Shop":{A:6,B:6,C:6}},
-"A47600000000":{"M/C Shop":{A:1,B:1,C:1},"Assy.Shop":{A:5,B:5,C:5}},
-"A33600000000":{"M/C Shop":{A:1,B:1,C:1},"Assy.Shop":{A:5,B:5,C:5}}
-},
-"Drum Gear Shifter":{
-"A47700000000":{"M/C Shop":{A:5,B:5,C:5},"HT":{A:2,B:2,C:2},"Shot Blasting":{S1:1,S2:1}}
+/* =========================================
+   SAFE ROUTING BACK ACTION
+========================================= */
+function goBackSafely() {
+    let referrer = document.referrer;
+    
+    if (referrer.includes("/supervisor_dashboard")) {
+        window.location.href = "/supervisor_dashboard";
+    } else if (referrer.includes("/admin")) {
+        window.location.href = "/admin";
+    } else {
+        window.location.href = "/"; 
+    }
 }
-};
+
+async function init(){
+    let d = new Date();
+    document.getElementById("date").innerHTML =
+        `${String(d.getDate()).padStart(2,'0')}-${String(d.getMonth()+1).padStart(2,'0')}-${d.getFullYear()}`;
+
+    document.getElementById("historyDate").value = d.toISOString().split('T')[0];
+
+    try{
+        const resp = await fetch('/api/get_master_data');
+        db_data = await resp.json();
+        renderMachines();
+
+        // Parallel processing of available workers, buffer mappings, and existing assignments
+        const [opResp, bufferResp, allocResp] = await Promise.all([
+            fetch('/api/get_available_operators'),
+            fetch('/api/get_buffer_allocations'),
+            fetch('/api/get_today_allocations')
+        ]);
+
+        const ops = await opResp.json();
+        const bufferedOps = await bufferResp.json();
+        savedAllocations = await allocResp.json();
+
+        // Create cross-reference Set for lightning fast searching
+        const bufferedEmpIds = new Set(bufferedOps.map(b => b.emp_id));
+
+        let opHtml = '<div class="title">Available Operators</div>';
+        if(ops.length === 0){
+            opHtml += `<p style="color:gray;font-size:12px;">No operators present today</p>`;
+        }
+
+        ops.forEach(o => {
+            const isBuffered = bufferedEmpIds.has(o.emp_id);
+            
+            // Appends text identifier without changing styles or intercepting raw layout configurations
+            opHtml += `
+            <div class="operator" draggable="true" ondragstart="drag(event)" data-id="${o.emp_id}" data-name="${o.emp_name}">
+                 ${o.emp_name} ${isBuffered ? '<span style="color:#b45309; font-weight:bold;">(Buffered)</span>' : ''}<br>
+                 <small style="color:#555;">ID: ${o.emp_id} | Skill ${o.skill_level}</small>
+            </div>`;
+        });
+        document.getElementById("operatorList").innerHTML = opHtml;
+
+    } catch(err){
+        console.log(err);
+        alert("Error Loading Allocation Data");
+    }
+}
+
+function renderMachines(){
+    let html = '<div class="title">Machine Name</div>';
+    Object.keys(db_data).forEach(machine => {
+        html += `<button class="btn part" onclick="selectMachine(this,'${machine}')">${machine}</button>`;
+    });
+    document.getElementById("partBox").innerHTML = html;
+}
+
+function selectMachine(el, machine){
+    setActive("part", el);
+    let html = "";
+    Object.keys(db_data[machine]).forEach(part => {
+        html += `<button class="btn partNo" onclick="selectPart(this,'${machine}','${part}')">${part}</button>`;
+    });
+    document.getElementById("partNoList").innerHTML = html;
+    document.getElementById("partNoBox").style.display = "block";
+    document.getElementById("stationBox").style.display = "none";
+    document.getElementById("workerBox").style.display = "none";
+}
+
+function selectPart(el, machine, part){
+    setActive("partNo", el);
+    let stations = db_data[machine][part];
+    let html = "";
+    Object.keys(stations).forEach(station => {
+        html += `<button class="btn station" onclick="selectStation(this,'${machine}','${part}','${station}')">${station}</button>`;
+    });
+    document.getElementById("stationList").innerHTML = html;
+    document.getElementById("stationBox").style.display = "block";
+    document.getElementById("workerBox").style.display = "none";
+}
+
+/* =========================================
+   STATION CARD DISPLAY INTERFACES
+========================================= */
+function selectStation(el, machine, part, station){
+    setActive("station", el);
+    let stationData = db_data[machine][part][station];
+    let manpower = stationData.required_manpower;
+    let masterId = stationData.master_data_id;
+    let html = "";
+
+    let isBufferStation = station.toUpperCase().includes("BUFFER");
+
+    let existing = savedAllocations.filter(
+        a => a.machine_name === machine &&
+        a.part_number === part &&
+        (a.shop_name + " - " + a.station_name) === station
+    );
+
+    for(let i=0; i<manpower; i++){
+        let assigned = existing[i];
+        let listData = [];
+        
+        let displayName = isBufferStation ? "Empty Buffer Slot" : "Empty";
+        let extraClasses = isBufferStation ? "buffer-block" : "";
+
+        if(assigned){
+            listData.push({ emp_id: assigned.emp_id, name: assigned.emp_name });
+            displayName = assigned.emp_name;
+            extraClasses += " saved";
+        }
+
+        html += `
+        <div class="worker ${extraClasses}" data-master="${masterId}" ondrop="drop(event)" ondragover="allowDrop(event)" data-list='${JSON.stringify(listData)}'>
+            <button class="bin-btn" onclick="openDeleteModal(event)">🗑</button>
+            <div class="names">${displayName}</div>
+            ${isBufferStation ? '<div class="buffer-badge">Buffered</div>' : ''}
+        </div>`;
+    }
+    document.getElementById("workers").innerHTML = html;
+    document.getElementById("workerBox").style.display = "block";
+}
 
 function setActive(cls, el){
-document.querySelectorAll("."+cls).forEach(b=>b.classList.remove("active"));
-el.classList.add("active");
+    document.querySelectorAll("." + cls).forEach(b => b.classList.remove("active"));
+    el.classList.add("active");
 }
 
-function selectPart(el, part){
-setActive("part",el);
-let html="";
-Object.keys(data[part]).forEach(p=>{
-html += `<button class="btn partNo" onclick="selectPartNo(this,'${part}','${p}')">${p}</button>`;
-});
-partNoList.innerHTML = html;
-partNoBox.style.display="block";
-stationBox.style.display="none";
-machineBox.style.display="none";
-workerBox.style.display="none";
-}
-
-function selectPartNo(el, part, partNo){
-setActive("partNo",el);
-let stations = data[part][partNo];
-let all = ["M/C Shop","Assy.Shop","Paint Shop","HT","Shot Blasting"];
-let html="";
-all.forEach(s=>{
-if(!stations[s]){
-html += `<button class="btn disabled">${s} (N/A)</button>`;
-}else{
-html += `<button class="btn station" onclick="selectStation(this,'${part}','${partNo}','${s}')">${s}</button>`;
-}
-});
-stationList.innerHTML = html;
-stationBox.style.display="block";
-machineBox.style.display="none";
-workerBox.style.display="none";
-}
-
-function selectStation(el, part, partNo, station){
-setActive("station",el);
-let machines = data[part][partNo][station];
-let html="";
-for(let m in machines){
-html += `<button class="btn machine" onclick="selectMachine(this,${machines[m]})">${m}</button>`;
-}
-machineList.innerHTML = html;
-machineBox.style.display="block";
-workerBox.style.display="none";
-}
-
-function selectMachine(el, count){
-setActive("machine",el);
-let html="";
-for(let i=0;i<count;i++){
-html += `<div class="worker" ondrop="drop(event)" ondragover="allowDrop(event)" ondragenter="hoverIn(event)" ondragleave="hoverOut(event)" data-list=""></div>`;
-}
-workers.innerHTML = html;
-workerBox.style.display="block";
-}
-
-// DRAG
-function drag(ev){
-ev.dataTransfer.setData("name", ev.target.dataset.name);
-}
-
-// DROP
 function allowDrop(ev){ ev.preventDefault(); }
-
-function hoverIn(ev){ ev.target.classList.add("hover"); }
-function hoverOut(ev){ ev.target.classList.remove("hover"); }
+function drag(ev){
+    ev.dataTransfer.setData("emp_id", ev.target.dataset.id);
+    ev.dataTransfer.setData("name", ev.target.dataset.name);
+}
 
 function drop(ev){
-ev.preventDefault();
-ev.target.classList.remove("hover");
+    ev.preventDefault();
+    let target = ev.target.closest('.worker');
+    let emp_id = ev.dataTransfer.getData("emp_id");
+    let name = ev.dataTransfer.getData("name");
+    let list = JSON.parse(target.dataset.list);
 
-let name = ev.dataTransfer.getData("name");
-let list = ev.target.dataset.list ? ev.target.dataset.list.split(",") : [];
+    if(list.length > 0){
+        target.classList.add("shake");
+        setTimeout(() => { target.classList.remove("shake"); }, 300);
+        return;
+    }
 
-list.push(name);
-ev.target.dataset.list = list.join(",");
-
-// display truncated
-let display = list.join(", ");
-ev.target.innerText = display;
-
-// tooltip full
-ev.target.title = display;
+    list.push({ emp_id, name });
+    target.dataset.list = JSON.stringify(list);
+    target.querySelector('.names').innerText = name;
 }
-</script>
 
+async function saveAllocation(){
+    let workers = document.querySelectorAll(".worker");
+    let finalData = [];
+
+    workers.forEach(w => {
+        let master_id = w.dataset.master;
+        let list = JSON.parse(w.dataset.list);
+        list.forEach(op => {
+            finalData.push({ emp_id: op.emp_id, master_data_id: master_id });
+        });
+    });
+
+    if(finalData.length === 0){
+        alert("No Allocation Done");
+        return;
+    }
+
+    let res = await fetch("/api/save_allocation",{
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
+        body:JSON.stringify(finalData)
+    });
+
+    let data = await res.json();
+    alert(data.message);
+
+    document.querySelectorAll(".worker").forEach(w => {
+        let list = JSON.parse(w.dataset.list);
+        if(list.length > 0) w.classList.add("saved");
+    });
+
+    const allocResp = await fetch('/api/get_today_allocations');
+    savedAllocations = await allocResp.json();
+}
+
+function openDeleteModal(ev){
+    ev.stopPropagation();
+    currentTargetBlock = ev.target.closest('.worker');
+    let list = JSON.parse(currentTargetBlock.dataset.list);
+    let html = list.length ? "" : "No assignments";
+
+    list.forEach((op, i) => {
+        html += `<div><input type="checkbox" class="del-check" data-idx="${i}"> ${op.name}</div>`;
+    });
+    document.getElementById("modalList").innerHTML = html;
+    document.getElementById("deleteModal").style.display = "flex";
+}
+
+function closeModal(){ document.getElementById("deleteModal").style.display = "none"; }
+
+function confirmDeletion(){
+    let list = JSON.parse(currentTargetBlock.dataset.list);
+    let checkboxes = document.querySelectorAll(".del-check");
+    let newList = list.filter((_, i) => !checkboxes[i].checked);
+
+    currentTargetBlock.dataset.list = JSON.stringify(newList);
+    
+    if (newList.length) {
+        currentTargetBlock.querySelector('.names').innerText = newList.map(o => o.name).join(", ");
+    } else {
+        let isBuffer = currentTargetBlock.classList.contains("buffer-block");
+        currentTargetBlock.querySelector('.names').innerText = isBuffer ? "Empty Buffer Slot" : "Empty";
+    }
+
+    if(newList.length === 0){ currentTargetBlock.classList.remove("saved"); }
+    closeModal();
+}
+
+/* =========================================
+   DYNAMIC ROUTE HISTORY CODES
+========================================= */
+function openHistoryModal() {
+    document.getElementById("historyModal").style.display = "flex";
+}
+
+function closeHistoryModal() {
+    document.getElementById("historyModal").style.display = "none";
+}
+
+async function loadAllocationsByDate() {
+    let chosenDate = document.getElementById("historyDate").value; 
+    if(!chosenDate) {
+        alert("Please pick a tracking calendar date first.");
+        return;
+    }
+
+    let tbody = document.getElementById("historyTableBody");
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#1d4ed8; padding:15px;">Querying database records...</td></tr>`;
+
+    try {
+        let res = await fetch(`/api/get_allocations_by_date?date=${chosenDate}`); 
+        let databaseRows = await res.json();
+        
+        let htmlRows = "";
+        
+        if(databaseRows.length === 0) {
+            htmlRows = `<tr><td colspan="6" style="text-align:center; color:gray; padding:20px;">No allocation mapping logs found for ${chosenDate}.</td></tr>`;
+        } else {
+            databaseRows.forEach(row => {
+                let checkBuffer = row.station_name.toUpperCase().includes("BUFFER");
+                let badgeStyle = checkBuffer ? "background:#fef3c7; color:#d97706; font-weight:bold;" : "background:#e0f2fe; color:#0369a1;";
+                
+                htmlRows += `
+                <tr>
+                    <td><b>${row.emp_id}</b></td>
+                    <td>${row.emp_name}</td>
+                    <td><span style="color:#1d4ed8; font-weight:bold;">${row.machine_name}</span></td>
+                    <td><code>${row.part_number}</code></td>
+                    <td>${row.shop_name}</td>
+                    <td><span style="padding:4px 8px; border-radius:4px; font-size:12px; ${badgeStyle}">${row.station_name}</span></td>
+                </tr>`;
+            });
+        }
+        tbody.innerHTML = htmlRows;
+    } catch(err) {
+        console.error(err);
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:red; padding:15px;">Failed loading server history array schemas.</td></tr>`;
+    }
+}
+
+window.onload = init;
+</script>
 </body>
 </html>
