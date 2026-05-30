@@ -4,7 +4,7 @@ import threading
 
 # Centralized database configuration matching your precise original credentials
 db_config = {
-    'host': 'localhost',
+    'host': 'mysql',
     'user': 'root',          
     'password': 'root',       # Restored your correct password from your original config
     'database': 'ammp_db',   
