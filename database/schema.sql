@@ -10,7 +10,6 @@ USE ammp_db;
 
 CREATE TABLE users (
 
-```
 user_id INT PRIMARY KEY AUTO_INCREMENT,
 
 username VARCHAR(50) UNIQUE NOT NULL,
@@ -20,7 +19,6 @@ password VARCHAR(255) NOT NULL,
 role VARCHAR(20) NOT NULL,
 
 status VARCHAR(20) DEFAULT 'Active'
-```
 
 );
 
@@ -35,13 +33,13 @@ VALUES
 
 CREATE TABLE products (
 
-```
+
 product_id INT PRIMARY KEY AUTO_INCREMENT,
 
 machine_name VARCHAR(100) NOT NULL,
 
 part_number VARCHAR(100) NOT NULL
-```
+
 
 );
 
@@ -51,7 +49,6 @@ part_number VARCHAR(100) NOT NULL
 
 CREATE TABLE master_data (
 
-```
 id INT PRIMARY KEY AUTO_INCREMENT,
 
 product_id INT NOT NULL,
@@ -67,7 +64,7 @@ skill_required VARCHAR(20),
 FOREIGN KEY(product_id)
 REFERENCES products(product_id)
 ON DELETE CASCADE
-```
+
 
 );
 
@@ -77,7 +74,7 @@ ON DELETE CASCADE
 
 CREATE TABLE employee (
 
-```
+
 emp_id VARCHAR(20) PRIMARY KEY,
 
 emp_name VARCHAR(100) NOT NULL,
@@ -93,7 +90,7 @@ joining_date DATE,
 mobile VARCHAR(15),
 
 status VARCHAR(20) DEFAULT 'Active'
-```
+
 
 );
 
@@ -103,7 +100,7 @@ status VARCHAR(20) DEFAULT 'Active'
 
 CREATE TABLE attendance (
 
-```
+
 attendance_id INT PRIMARY KEY AUTO_INCREMENT,
 
 emp_id VARCHAR(20),
@@ -115,7 +112,7 @@ status VARCHAR(20),
 FOREIGN KEY(emp_id)
 REFERENCES employee(emp_id)
 ON DELETE CASCADE
-```
+
 
 );
 
@@ -125,7 +122,7 @@ ON DELETE CASCADE
 
 CREATE TABLE allocation (
 
-```
+
 allocation_id INT PRIMARY KEY AUTO_INCREMENT,
 
 emp_id VARCHAR(20),
@@ -143,7 +140,7 @@ ON DELETE CASCADE,
 FOREIGN KEY(master_data_id)
 REFERENCES master_data(id)
 ON DELETE CASCADE
-```
+
 
 );
 
@@ -153,7 +150,7 @@ ON DELETE CASCADE
 
 CREATE TABLE shifts (
 
-```
+
 shift_id INT PRIMARY KEY AUTO_INCREMENT,
 
 shift_name VARCHAR(20),
@@ -161,7 +158,7 @@ shift_name VARCHAR(20),
 start_time TIME,
 
 end_time TIME
-```
+
 
 );
 
@@ -177,7 +174,7 @@ VALUES
 
 CREATE TABLE machine_status (
 
-```
+
 status_id INT PRIMARY KEY AUTO_INCREMENT,
 
 master_data_id INT,
@@ -189,7 +186,7 @@ updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 FOREIGN KEY(master_data_id)
 REFERENCES master_data(id)
 ON DELETE CASCADE
-```
+
 
 );
 
@@ -199,7 +196,7 @@ ON DELETE CASCADE
 
 CREATE TABLE system_logs (
 
-```
+
 log_id INT PRIMARY KEY AUTO_INCREMENT,
 
 user_name VARCHAR(100),
@@ -207,7 +204,7 @@ user_name VARCHAR(100),
 action_done VARCHAR(255),
 
 log_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-```
+
 
 );
 
@@ -217,13 +214,12 @@ log_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 
 CREATE TABLE dashboard_settings (
 
-```
+
 id INT PRIMARY KEY AUTO_INCREMENT,
 
 total_stations INT DEFAULT 0,
 
 buffer_required INT DEFAULT 0
-```
 
 );
 
@@ -239,13 +235,11 @@ VALUES(14,5);
 
 CREATE TABLE settings (
 
-```
 id INT PRIMARY KEY AUTO_INCREMENT,
 
 setting_name VARCHAR(100),
 
 setting_value VARCHAR(100)
-```
 
 );
 
@@ -255,7 +249,7 @@ setting_value VARCHAR(100)
 
 CREATE TABLE buffer_allocations (
 
-```
+
 emp_id VARCHAR(20) NOT NULL,
 
 buffer_index INT NOT NULL,
@@ -267,7 +261,7 @@ PRIMARY KEY(emp_id),
 FOREIGN KEY(emp_id)
 REFERENCES employee(emp_id)
 ON DELETE CASCADE
-```
+
 
 );
 
